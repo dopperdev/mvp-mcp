@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-gateway-config
+  namespace: mcp-gateway
+data:
+  log-level: "INFO"
+  rate-limit-requests: "100"
+  rate-limit-period: "3600"
+  audit-retention-days: "90"
+  pii-detection-enabled: "true"

@@ -457,9 +457,22 @@ async def dashboard():
         )
 
 
-@app.get("/")
-async def root():
-    """Root endpoint."""
+@app.get("/", response_class=HTMLResponse)
+async def landing_page():
+    """Serve the landing page."""
+    try:
+        with open("src/static/landing.html", "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>MCP Security Gateway</h1><p>Landing page not found. Please ensure src/static/landing.html exists.</p>",
+            status_code=404
+        )
+
+
+@app.get("/api")
+async def api_root():
+    """API root endpoint."""
     return {
         "service": "MCP Security Gateway",
         "version": "0.1.0",
