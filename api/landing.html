@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Enterprise-grade security proxy for MCP communications. Protect your AI infrastructure with advanced threat detection, authentication, and audit logging.">
+    <meta name="keywords" content="MCP, Model Context Protocol, Security, API Gateway, Authentication, Authorization, Audit Logging">
+    <title>MCP Security Gateway - Enterprise AI Security</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="2" fill="white" opacity="0.1"/></svg>');
+            background-size: 50px 50px;
+        }
+
+        .hero .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero .stats {
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .hero .stat {
+            text-align: center;
+        }
+
+        .hero .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            display: block;
+        }
+
+        .hero .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .features .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--light);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        .feature-card ul {
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+            color: var(--gray);
+        }
+
+        .feature-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Security Section */
+        .security {
+            padding: 6rem 2rem;
+            background: var(--dark);
+            color: white;
+        }
+
+        .security .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .security-item {
+            padding: 2rem;
+            background: var(--dark-light);
+            border-radius: 12px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .security-item.prevented {
+            border-left-color: var(--success);
+        }
+
+        .security-item h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .security-item p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* Code Section */
+        .code-demo {
+            padding: 6rem 2rem;
+            background: var(--light);
+        }
+
+        .code-demo .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .code-example {
+            background: var(--dark);
+            border-radius: 12px;
+            padding: 2rem;
+            overflow-x: auto;
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-example pre {
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .code-example .comment {
+            color: #64748b;
+        }
+
+        .code-example .string {
+            color: #86efac;
+        }
+
+        .code-example .keyword {
+            color: #f0abfc;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .pricing .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid var(--light);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card .price {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-card .price-period {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-card li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .pricing-card li:before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+        }
+
+        footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        footer h4 {
+            margin-bottom: 1rem;
+        }
+
+        footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: white;
+        }
+
+        footer .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        footer .copyright {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--dark-light);
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.25rem;
+            }
+
+            nav .nav-links {
+                display: none;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">🛡️ MCP Security Gateway</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#security">Security</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="/docs">API Docs</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+            <a href="#get-started" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="fade-in-up">Secure Your AI Infrastructure</h1>
+            <p class="fade-in-up">Enterprise-grade security proxy for Model Context Protocol. Protect your MCP servers with advanced threat detection, authentication, and comprehensive audit logging.</p>
+            <div class="cta-buttons fade-in-up">
+                <a href="#get-started" class="btn btn-primary">Start Free Trial</a>
+                <a href="/docs" class="btn btn-secondary">View Documentation</a>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Security Tests</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">&lt;10ms</span>
+                    <span class="stat-label">Validation Overhead</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Concurrent Connections</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Open Source</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Comprehensive Security Features</h2>
+            <p class="section-subtitle">Everything you need to secure your MCP communications</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Authentication & Authorization</h3>
+                    <p>JWT-based authentication with granular role-based access control.</p>
+                    <ul>
+                        <li>Per-user access control lists</li>
+                        <li>Read/Write/Execute permissions</li>
+                        <li>Service account support</li>
+                        <li>Admin and user roles</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Threat Detection</h3>
+                    <p>Advanced validation blocks common attack vectors automatically.</p>
+                    <ul>
+                        <li>SQL injection prevention</li>
+                        <li>Path traversal blocking</li>
+                        <li>Command injection detection</li>
+                        <li>Base64 exploit scanning</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Rate Limiting</h3>
+                    <p>Prevent abuse with intelligent rate limiting per user and server.</p>
+                    <ul>
+                        <li>Token bucket algorithm</li>
+                        <li>Redis-backed for scale</li>
+                        <li>Configurable limits</li>
+                        <li>Graceful degradation</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Audit Logging</h3>
+                    <p>Complete audit trail of every request with PII protection.</p>
+                    <ul>
+                        <li>Full request/response logging</li>
+                        <li>Automatic PII masking</li>
+                        <li>Structured JSON format</li>
+                        <li>Configurable retention</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Real-Time Monitoring</h3>
+                    <p>Live dashboard with metrics and security alerts.</p>
+                    <ul>
+                        <li>Request metrics tracking</li>
+                        <li>Security alerts dashboard</li>
+                        <li>Performance monitoring</li>
+                        <li>Prometheus integration</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Easy Deployment</h3>
+                    <p>Deploy in minutes with Docker or your favorite cloud platform.</p>
+                    <ul>
+                        <li>Docker Compose ready</li>
+                        <li>Kubernetes manifests</li>
+                        <li>Cloud-agnostic design</li>
+                        <li>Auto-scaling support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section id="security" class="security">
+        <div class="container">
+            <h2 class="section-title">Threats Blocked Automatically</h2>
+            <p class="section-subtitle">Protect against OWASP Top 10 and beyond</p>
+
+            <div class="security-grid">
+                <div class="security-item prevented">
+                    <h4>✅ SQL Injection</h4>
+                    <p>Detects and blocks DROP, DELETE, UNION SELECT, and 10+ other patterns</p>
+                </div>
+
+                <div class="security-item prevented">
+                    <h4>✅ Path Traversal</h4>
+                    <p>Prevents ../../../etc/passwd and other directory traversal attacks</p>
+                </div>
+
+                <div class="security-item prevented">
+                    <h4>✅ Command Injection</h4>
+                    <p>Blocks shell metacharacters and dangerous command execution</p>
+                </div>
+
+                <div class="security-item prevented">
+                    <h4>✅ JNDI Injection</h4>
+                    <p>Protects against Log4Shell-style attacks with ${jndi:...} detection</p>
+                </div>
+
+                <div class="security-item prevented">
+                    <h4>✅ Base64 Exploits</h4>
+                    <p>Decodes and scans base64 strings for encoded malicious payloads</p>
+                </div>
+
+                <div class="security-item prevented">
+                    <h4>✅ XXE Attacks</h4>
+                    <p>Prevents XML External Entity attacks in MCP requests</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Demo Section -->
+    <section class="code-demo">
+        <div class="container">
+            <h2 class="section-title">Simple Integration</h2>
+            <p class="section-subtitle">Get started in minutes with our straightforward API</p>
+
+            <div class="code-example">
+                <pre><code><span class="comment"># 1. Start the gateway</span>
+<span class="keyword">$</span> docker-compose up -d
+
+<span class="comment"># 2. Login and get JWT token</span>
+<span class="keyword">$</span> curl -X POST http://localhost:8000/auth/login \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{"username":"admin","password":"admin"}'</span>
+
+<span class="comment"># 3. Send MCP request through gateway</span>
+<span class="keyword">$</span> curl -X POST http://localhost:8000/mcp/my-server \
+  -H <span class="string">"Authorization: Bearer $TOKEN"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{
+    "jsonrpc": "2.0",
+    "method": "tools/list",
+    "params": {},
+    "id": "1"
+  }'</span>
+
+<span class="comment"># ✅ Request validated, authenticated, rate-limited, and logged!</span></code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2 class="section-title">Simple, Transparent Pricing</h2>
+            <p class="section-subtitle">Choose the plan that fits your needs</p>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Open Source</h3>
+                    <div class="price">Free</div>
+                    <div class="price-period">Forever</div>
+                    <ul>
+                        <li>Self-hosted deployment</li>
+                        <li>All security features</li>
+                        <li>Community support</li>
+                        <li>MIT License</li>
+                        <li>Unlimited servers</li>
+                        <li>Unlimited users</li>
+                    </ul>
+                    <a href="https://github.com/your-repo" class="btn btn-secondary">View on GitHub</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <h3>Enterprise</h3>
+                    <div class="price">Custom</div>
+                    <div class="price-period">Contact us</div>
+                    <ul>
+                        <li>Everything in Open Source</li>
+                        <li>Priority support</li>
+                        <li>SLA guarantees</li>
+                        <li>Professional services</li>
+                        <li>Custom integrations</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                    <a href="mailto:sales@example.com" class="btn btn-primary">Contact Sales</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Cloud Hosted</h3>
+                    <div class="price">$99</div>
+                    <div class="price-period">per month</div>
+                    <ul>
+                        <li>Fully managed service</li>
+                        <li>99.9% uptime SLA</li>
+                        <li>Automatic updates</li>
+                        <li>Email support</li>
+                        <li>Daily backups</li>
+                        <li>Up to 1M requests/month</li>
+                    </ul>
+                    <a href="#get-started" class="btn btn-secondary">Coming Soon</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="get-started" class="cta-section">
+        <div class="container">
+            <h2>Ready to Secure Your MCP Infrastructure?</h2>
+            <p>Get started in less than 5 minutes with our quick start guide</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/your-repo" class="btn btn-primary">View on GitHub</a>
+                <a href="/docs" class="btn btn-secondary">Read Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div>
+                <h4>Product</h4>
+                <a href="#features">Features</a>
+                <a href="#security">Security</a>
+                <a href="#pricing">Pricing</a>
+                <a href="/dashboard">Dashboard</a>
+            </div>
+            <div>
+                <h4>Documentation</h4>
+                <a href="/docs">API Reference</a>
+                <a href="https://github.com/your-repo/blob/main/README.md">Quick Start</a>
+                <a href="https://github.com/your-repo/blob/main/SECURITY.md">Security Guide</a>
+                <a href="https://github.com/your-repo/blob/main/DEPLOYMENT.md">Deployment</a>
+            </div>
+            <div>
+                <h4>Community</h4>
+                <a href="https://github.com/your-repo">GitHub</a>
+                <a href="https://github.com/your-repo/issues">Issues</a>
+                <a href="https://github.com/your-repo/discussions">Discussions</a>
+                <a href="https://twitter.com/your-handle">Twitter</a>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="mailto:hello@example.com">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 MCP Security Gateway. Released under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
