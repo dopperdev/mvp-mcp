@@ -1,2 +1,2 @@
-fastapi==0.109.0
-mangum==0.17.0
+# No external dependencies needed for basic HTTP handler
+# The landing page is pure HTML/CSS with no Python dependencies
