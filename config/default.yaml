@@ -1,0 +1,89 @@
+# MCP Security Gateway Configuration
+
+# Gateway settings
+gateway:
+  host: "0.0.0.0"
+  port: 8000
+  log_level: "INFO"
+  workers: 4
+
+# Security settings
+security:
+  jwt_expiration_hours: 24
+  jwt_algorithm: "HS256"
+  encryption: "AES-256-GCM"
+  max_request_size_mb: 10
+
+# Audit settings
+audit:
+  enabled: true
+  pii_detection: true
+  retention_days: 30
+  async_logging: true
+
+  # PII patterns to detect and mask
+  pii_patterns:
+    - name: "email"
+      pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+    - name: "ssn"
+      pattern: "\\b\\d{3}-\\d{2}-\\d{4}\\b"
+    - name: "credit_card"
+      pattern: "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b"
+    - name: "phone"
+      pattern: "\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b"
+
+# Rate limiting
+rate_limiting:
+  enabled: true
+  default_requests: 100
+  default_period: 3600  # seconds
+  storage: "redis"
+
+# MCP Servers - can be configured here or via database
+servers:
+  - name: "company-database"
+    upstream_url: "http://localhost:9001"
+    enabled: true
+    allowed_tools: ["query", "schema", "tables"]
+    blocked_patterns:
+      - "DROP"
+      - "DELETE FROM"
+      - "TRUNCATE"
+    timeout: 30
+
+  - name: "filesystem-server"
+    upstream_url: "http://localhost:9002"
+    enabled: true
+    allowed_tools: ["read", "write", "list"]
+    blocked_patterns:
+      - "../"
+      - "/etc/"
+      - "~/"
+    timeout: 30
+
+# Policies - user-based access control
+policies:
+  - user: "data-scientist@company.com"
+    servers: ["company-database"]
+    permissions: ["read"]
+    rate_limit: 100
+    rate_limit_period: 3600
+
+  - user: "admin@company.com"
+    servers: ["company-database", "filesystem-server"]
+    permissions: ["read", "write", "execute"]
+    rate_limit: 1000
+    rate_limit_period: 3600
+
+# Monitoring
+monitoring:
+  prometheus_enabled: true
+  prometheus_port: 9090
+  metrics_path: "/metrics"
+
+# Dashboard
+dashboard:
+  enabled: true
+  refresh_interval_ms: 5000
+  max_alerts_displayed: 50
+  max_logs_displayed: 100
